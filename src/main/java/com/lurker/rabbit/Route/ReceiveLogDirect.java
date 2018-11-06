@@ -1,6 +1,8 @@
 package com.lurker.rabbit.Route;
 
+import com.lurker.rabbit.support.RabbitMQConfig;
 import com.rabbitmq.client.*;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.io.IOException;
 import java.util.Random;
@@ -14,7 +16,7 @@ public class ReceiveLogDirect {
 
     public static void main(String [] args) throws IOException, TimeoutException {
 
-        //ConnectionFactory
+        /*//ConnectionFactory
         ConnectionFactory factory = new ConnectionFactory();
         factory.setHost("39.108.176.64");
         factory.setPort(5672);
@@ -46,7 +48,13 @@ public class ReceiveLogDirect {
                 System.out.println("[Receive] get message [" + message + "] from server, log level " + severity);
             }
         };
-        channel.basicConsume(queueName, true, consumer);
+        channel.basicConsume(queueName, true, consumer);*/
+        int rand = new Random().nextInt(3);
+        final String severity = LOG_LEVEL_ARR[rand];
+        AnnotationConfigApplicationContext context =
+                new AnnotationConfigApplicationContext(RabbitMQConfig.class);
+        RabbitMQService rabbitMQService = context.getBean(RabbitMQService.class);
+        rabbitMQService.receive(EXCHANGE_NAME, severity);
 
     }
 
